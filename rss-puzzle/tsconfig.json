@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2016", 
+    "module": "es6",
+    "rootDir": "./src",
+    "moduleResolution": "node10",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true
+  }
+}
