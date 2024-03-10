@@ -2,6 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "plugins": [
+    "import",
     "@typescript-eslint",
     "prettier"
   ],
@@ -13,13 +14,15 @@
     "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
+  "parserOptions": {
+    "sourceType": "module",
+    "project": ["tsconfig.json"]
+  },
   "rules": {
     "no-console": 0,
     "@typescript-eslint/no-explicit-any": "error",
     "prettier/prettier": 2
 },
-"parserOptions": {
-  "project": ["tsconfig.json"]
-},
+
 "noInlineConfig": true
 }

@@ -1,1 +1,2 @@
-console.log('It just start');
+import './app/app';
+import './style.css';

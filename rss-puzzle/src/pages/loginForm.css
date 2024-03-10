@@ -1,0 +1,60 @@
+.loginForm_wrapper{
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 70%;
+  text-align: center;
+  font-size: 36px;
+  gap: 50px;
+  background-color: var(--light-brown);
+  border-radius: 100px;
+}
+.loginForm_FirstName{
+  width: 70%;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.loginForm_Surname{
+  width: 70%;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.loginForm_input{
+  opacity: 100%;
+  width: 60%;
+  font-size: 36px;
+
+}
+.loginForm_label{
+  width: 40%;
+  font-size: 36px;
+}
+.loginForm_input{
+  font-size: 36px;
+}
+.loginForm_button{
+  width: 40%;
+  font-size: 36px;
+  margin-top: 50px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--brown);
+}
+form:invalid .loginForm_button{
+  pointer-events: none;
+  opacity: 70%;
+  color: var(--light-brown);
+}
+@media all and (max-width: 880px) {
+  .loginForm_wrapper{
+    width: 90%;
+  }
+}
