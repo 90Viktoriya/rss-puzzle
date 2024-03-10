@@ -1,4 +1,5 @@
 import { BaseComponent } from '../components/baseComponent';
+import store from '../store/store';
 import './loginForm.css';
 
 const firstNameInput = new BaseComponent({
@@ -16,10 +17,40 @@ const lastNameInput = new BaseComponent({
   className: 'loginForm_input'
 });
 function markInvalidInput() {
-  if (lastNameInput.checkSiblings()) lastNameInput.addClass('loginForm_input-invalid');
-  else lastNameInput.removeClass('loginForm_input-invalid');
-  if (firstNameInput.checkSiblings()) firstNameInput.addClass('loginForm_input-invalid');
-  else firstNameInput.removeClass('loginForm_input-invalid');
+  let result = true;
+  if (lastNameInput.checkSiblings()) {
+    lastNameInput.addClass('loginForm_input-invalid');
+    result = false;
+  } else lastNameInput.removeClass('loginForm_input-invalid');
+  if (firstNameInput.checkSiblings()) {
+    firstNameInput.addClass('loginForm_input-invalid');
+    result = false;
+  } else firstNameInput.removeClass('loginForm_input-invalid');
+  return result;
+}
+function checkValues(value: string, child: BaseComponent, length: number) {
+  const upperFirst = /^[A-Z]{1}/gm;
+  const justLetter = /^[a-zA-Z-]+$/gm;
+  if (!value.match(upperFirst))
+    child.after(
+      new BaseComponent({ tag: 'div', textContent: 'First letter must be in uppercase', className: 'loginForm_info' })
+    );
+  if (!value.match(justLetter))
+    child.after(
+      new BaseComponent({
+        tag: 'div',
+        textContent: 'Please enter just English alphabet letters and the hyphen ("-") symbol',
+        className: 'loginForm_info'
+      })
+    );
+  if (value.length < length)
+    child.after(
+      new BaseComponent({
+        tag: 'div',
+        textContent: `Please enter minimum of ${length} characters`,
+        className: 'loginForm_info'
+      })
+    );
 }
 
 function checkInputs() {
@@ -27,53 +58,17 @@ function checkInputs() {
   const fName = document.getElementById('fname');
   firstNameInput.removeSiblings();
   lastNameInput.removeSiblings();
-  const upperFirst = /^[A-Z]{1}/gm;
-  const justLetter = /^[a-zA-Z-]+$/gm;
+  let lNameValue = '';
+  let fNameValue = '';
   if (lName instanceof HTMLInputElement) {
-    if (!lName.value.match(upperFirst))
-      lastNameInput.after(
-        new BaseComponent({ tag: 'div', textContent: 'First letter must be in uppercase', className: 'loginForm_info' })
-      );
-    if (!lName.value.match(justLetter))
-      lastNameInput.after(
-        new BaseComponent({
-          tag: 'div',
-          textContent: 'Please enter just English alphabet letters and the hyphen ("-") symbol',
-          className: 'loginForm_info'
-        })
-      );
-    if (lName.value.length < 4)
-      lastNameInput.after(
-        new BaseComponent({
-          tag: 'div',
-          textContent: 'Please enter minimum of 4 characters',
-          className: 'loginForm_info'
-        })
-      );
+    lNameValue = lName.value;
+    checkValues(lNameValue, lastNameInput, 4);
   }
   if (fName instanceof HTMLInputElement) {
-    if (!fName.value.match(upperFirst))
-      firstNameInput.after(
-        new BaseComponent({ tag: 'div', textContent: 'First letter must be in uppercase', className: 'loginForm_info' })
-      );
-    if (!fName.value.match(justLetter))
-      firstNameInput.after(
-        new BaseComponent({
-          tag: 'div',
-          textContent: 'Please enter just English alphabet letters and the hyphen ("-") symbol',
-          className: 'loginForm_info'
-        })
-      );
-    if (fName.value.length < 3)
-      firstNameInput.after(
-        new BaseComponent({
-          tag: 'div',
-          textContent: 'Please enter minimum of 3 characters',
-          className: 'loginForm_info'
-        })
-      );
+    fNameValue = fName.value;
+    checkValues(fNameValue, firstNameInput, 3);
   }
-  markInvalidInput();
+  if (markInvalidInput()) store.setUserData({ firstName: fNameValue, lastName: lNameValue });
 }
 const btn = new BaseComponent({
   tag: 'div',
