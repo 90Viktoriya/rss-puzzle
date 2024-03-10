@@ -24,3 +24,14 @@
   padding: 5px;
   border-radius: 15px;
 }
+.startPage_description{
+  width: 70%;
+  font-size: 36px;
+  margin: 20px;
+  text-align: center;
+}
+@media all and (max-width: 1000px) {
+  .startPage_wrapper{
+    width: 85%;
+  }
+}

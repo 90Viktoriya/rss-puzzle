@@ -6,7 +6,7 @@ import { PageType } from './types';
 export const startPage = (changePage: (page: PageType) => void) =>
   new BaseComponent(
     { tag: 'form', className: 'startPage_wrapper' },
-    new BaseComponent({ tag: 'h1', textContent: 'Welcome!', className: 'startPage_header' }),
+    new BaseComponent({ tag: 'h1', textContent: 'RSS Puzzle', className: 'startPage_header' }),
     new BaseComponent({
       tag: 'div',
       textContent: 'Logout',
@@ -15,6 +15,23 @@ export const startPage = (changePage: (page: PageType) => void) =>
         store.setUserData(null);
         changePage('login');
       }
+    }),
+    new BaseComponent({
+      tag: 'div',
+      textContent: 'RSS Puzzle is an interactive mini-game aimed at enhancing English language skills.',
+      className: 'startPage_description'
+    }),
+    new BaseComponent({
+      tag: 'div',
+      textContent:
+        'Assemble sentences from jumbled words. Click on words, collect phrases. Words can be drag and drop.',
+      className: 'startPage_description'
+    }),
+    new BaseComponent({
+      tag: 'div',
+      textContent:
+        'The game integrates various levels of difficulty, hint options, and a unique puzzle-like experience with artwork.',
+      className: 'startPage_description'
     })
   );
 export default startPage;
