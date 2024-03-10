@@ -6,5 +6,6 @@ export type Props = {
   id?: string;
   for?: string;
   required?: string;
-  pattern?: string;
+  onclick?(): void;
+  // pattern?: RegExp;
 };

@@ -25,17 +25,19 @@
   flex-direction: row;
   justify-content: center;
 }
-.loginForm_input{
-  opacity: 100%;
+.loginForm_inputWrapper{
   width: 60%;
+}
+.loginForm_input{
+  width: 100%;
   font-size: 36px;
-
+}
+.loginForm_info{
+  font-size: 20px;
+  color: red;
 }
 .loginForm_label{
   width: 40%;
-  font-size: 36px;
-}
-.loginForm_input{
   font-size: 36px;
 }
 .loginForm_button{
@@ -47,12 +49,17 @@
   align-items: center;
   justify-content: center;
   background-color: var(--brown);
+  border: 2px outset var(--dark);
 }
 form:invalid .loginForm_button{
   pointer-events: none;
   opacity: 70%;
   color: var(--light-brown);
 }
+.loginForm_input-invalid{
+  border: 2px solid red;
+}
+
 @media all and (max-width: 880px) {
   .loginForm_wrapper{
     width: 90%;
