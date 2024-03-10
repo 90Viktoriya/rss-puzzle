@@ -45,7 +45,10 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
   }
 
   public removeAllChild() {
-    this.children.forEach((el) => el.node.remove());
+    this.children.forEach((el) => {
+      el.removeAllChild();
+      el.node.remove();
+    });
     this.children.length = 0;
   }
 

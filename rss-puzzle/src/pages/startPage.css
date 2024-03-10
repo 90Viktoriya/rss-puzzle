@@ -1,5 +1,5 @@
 .startPage_wrapper{
-  margin-top: 50px;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -30,6 +30,12 @@
   margin: 20px;
   text-align: center;
 }
+.startPage_name{
+  background: linear-gradient(to right, red, blue);
+  background-clip: text;
+  color: transparent;
+}
+
 @media all and (max-width: 1000px) {
   .startPage_wrapper{
     width: 85%;
