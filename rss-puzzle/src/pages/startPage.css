@@ -1,0 +1,26 @@
+.startPage_wrapper{
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px;
+  width: 70%;
+  background-color: var(--light-brown);
+  border-radius: 100px;
+  position: relative;
+}
+.startPage_button-logout{
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  font-size: 36px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--brown);
+  border: 2px outset var(--dark);
+  padding: 5px;
+  border-radius: 15px;
+}

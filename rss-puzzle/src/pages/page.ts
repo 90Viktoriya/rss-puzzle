@@ -1,10 +1,17 @@
 import { BaseComponent } from '../components/baseComponent';
 import { loginForm } from './loginForm';
+import store from '../store/store';
+import { startPage } from './startPage';
+import { PageType } from './types';
 
-class PageWrapperComponent extends BaseComponent {
-  constructor() {
-    super({ className: 'page_wrapper' }, loginForm());
-  }
+const pageWrapper = new BaseComponent({ className: 'page_wrapper' });
+
+function loadPage(page?: PageType) {
+  pageWrapper.removeAllChild();
+  if (page === 'start') pageWrapper.append(startPage(loadPage));
+  if (page === 'login') pageWrapper.append(loginForm(loadPage));
 }
-export const PageWrapper = () => new PageWrapperComponent();
-export default PageWrapper;
+
+loadPage(store.checkUserData() ? 'start' : 'login');
+
+export default pageWrapper;

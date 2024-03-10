@@ -1,6 +1,7 @@
 import { BaseComponent } from '../components/baseComponent';
 import store from '../store/store';
 import './loginForm.css';
+import { PageType } from './types';
 
 const firstNameInput = new BaseComponent({
   tag: 'input',
@@ -68,17 +69,14 @@ function checkInputs() {
     fNameValue = fName.value;
     checkValues(fNameValue, firstNameInput, 3);
   }
-  if (markInvalidInput()) store.setUserData({ firstName: fNameValue, lastName: lNameValue });
-}
-const btn = new BaseComponent({
-  tag: 'div',
-  textContent: 'Login',
-  className: 'loginForm_button',
-  onclick: () => {
-    checkInputs();
+  if (markInvalidInput()) {
+    store.setUserData({ firstName: fNameValue, lastName: lNameValue });
+    return true;
   }
-});
-export const loginForm = () =>
+  return false;
+}
+
+export const loginForm = (changePage: (page: PageType) => void) =>
   new BaseComponent(
     { tag: 'form', className: 'loginForm_wrapper' },
     new BaseComponent({ tag: 'h1', textContent: 'Please enter your name!', className: 'loginForm_header' }),
@@ -92,6 +90,13 @@ export const loginForm = () =>
       new BaseComponent({ tag: 'label', textContent: 'Surname:', className: 'loginForm_label' }),
       new BaseComponent({ tag: 'div', className: 'loginForm_inputWrapper' }, lastNameInput)
     ),
-    btn
+    new BaseComponent({
+      tag: 'div',
+      textContent: 'Login',
+      className: 'loginForm_button',
+      onclick: () => {
+        if (checkInputs()) changePage('start');
+      }
+    })
   );
 export default loginForm;

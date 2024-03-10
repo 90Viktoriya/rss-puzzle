@@ -11,7 +11,7 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
     const node = document.createElement(prop.tag ?? 'div') as T;
     Object.assign(node, prop);
     this.node = node;
-    if (children) this.appendChildren(children);
+    if (children) this.appendChilds(children);
   }
 
   public getNode() {
@@ -22,9 +22,12 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
     return !!this.siblings;
   }
 
-  private append(child: BaseComponent | HTMLElement) {
+  public append(child: BaseComponent | HTMLElement) {
     if (child instanceof HTMLElement) this.node.append(child);
-    else this.node.append(child.getNode());
+    else {
+      this.node.append(child.getNode());
+      this.children.push(child);
+    }
   }
 
   public after(child: BaseComponent | HTMLElement) {
@@ -33,7 +36,7 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
     this.siblings += 1;
   }
 
-  private appendChildren(children: (BaseComponent | HTMLElement | null)[]) {
+  private appendChilds(children: (BaseComponent | HTMLElement | null)[]) {
     children.forEach((el) => {
       if (el) {
         this.append(el);
