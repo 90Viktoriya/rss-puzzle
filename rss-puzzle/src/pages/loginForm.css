@@ -1,5 +1,6 @@
 .loginForm_wrapper{
-  margin-top: 50px;
+  padding: 50px;
+  margin: 50px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -50,6 +51,8 @@
   justify-content: center;
   background-color: var(--brown);
   border: 2px outset var(--dark);
+  border-radius: 15px;
+  cursor: pointer;
 }
 form:invalid .loginForm_button{
   pointer-events: none;

@@ -21,6 +21,7 @@ const greeting = () =>
       className: 'startPage_name'
     })
   );
+
 export const startPage = (changePage: (page: PageType) => void) =>
   new BaseComponent(
     { tag: 'form', className: 'startPage_wrapper' },
@@ -51,6 +52,14 @@ export const startPage = (changePage: (page: PageType) => void) =>
       textContent:
         'The game integrates various levels of difficulty, hint options, and a unique puzzle-like experience with artwork.',
       className: 'startPage_description'
+    }),
+    new BaseComponent({
+      tag: 'div',
+      textContent: 'Start',
+      className: 'startPage_btn-start',
+      onclick: () => {
+        changePage('main');
+      }
     })
   );
 export default startPage;

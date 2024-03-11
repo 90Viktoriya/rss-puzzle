@@ -1,1 +1,1 @@
-export type PageType = 'start' | 'login';
+export type PageType = 'start' | 'login' | 'main';
