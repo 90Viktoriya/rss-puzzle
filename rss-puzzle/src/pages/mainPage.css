@@ -1,13 +1,12 @@
 .mainPage_wrapper{
-  padding: 30px;
-  min-height: 100px;
-  margin: 30px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 36px;
-  width: 70%;
-  background-color: var(--light-brown);
-  border-radius: 100px;
+  width: 90%;
 }
+.mainPage_menu-wrapper{
+  min-height: 100px;
+}
+
+

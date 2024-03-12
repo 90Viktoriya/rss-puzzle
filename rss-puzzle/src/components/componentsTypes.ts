@@ -7,5 +7,10 @@ export type Props = {
   for?: string;
   required?: string;
   onclick?(): void;
-  // pattern?: RegExp;
+};
+export type Size = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 };

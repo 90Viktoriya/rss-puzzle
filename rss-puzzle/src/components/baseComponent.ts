@@ -1,4 +1,4 @@
-import { Props } from './types';
+import { Props } from './componentsTypes';
 
 export class BaseComponent<T extends HTMLElement = HTMLElement> {
   protected node: T;
