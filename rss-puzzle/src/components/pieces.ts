@@ -1,3 +1,5 @@
+import { Place } from './componentsTypes';
+
 export class Piece {
   private rowID: number;
 
@@ -13,7 +15,7 @@ export class Piece {
 
   private y = 0;
 
-  private deleted = false;
+  private place: Place;
 
   constructor(rowID: number, colID: number, text: string, pieceHeight: number, pieceWidth: number) {
     this.rowID = rowID;
@@ -21,9 +23,10 @@ export class Piece {
     this.text = text;
     this.height = pieceHeight;
     this.width = pieceWidth;
+    this.place = 'source';
   }
 
-  getCallID() {
+  getColID() {
     return this.colID;
   }
 
@@ -31,8 +34,20 @@ export class Piece {
     return this.width;
   }
 
+  getY() {
+    return this.y;
+  }
+
+  getPlace() {
+    return this.place;
+  }
+
+  setPlace(newValue: Place) {
+    this.place = newValue;
+  }
+
   public delete(context: CanvasRenderingContext2D) {
-    this.deleted = true;
+    this.place = 'result';
     context.clearRect(this.x, this.y, this.width, this.height);
   }
 
