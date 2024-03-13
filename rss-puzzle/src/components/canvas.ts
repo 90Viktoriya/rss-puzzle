@@ -85,11 +85,19 @@ export class Canvas {
     this.context.stroke();
   }
 
+  public calculateWidthParam(sentence: Array<string>) {
+    const letterCount = sentence.toString().length + 1;
+    console.log(sentence.toString());
+    console.log(letterCount);
+    return this.sizeMain.width / letterCount;
+  }
+
   public createPieces(sentences: Array<Array<string>>) {
     for (let i = 0; i < sentences.length; i += 1) {
       this.pieces.push([]);
-      const width = this.sizeMain.width / sentences[i].length;
+      const widthParam = this.calculateWidthParam(sentences[i]);
       for (let j = 0; j < sentences[i].length; j += 1) {
+        const width = widthParam * (sentences[i][j].length + 1);
         this.pieces[i].push(new Piece(i, j, sentences[i][j], this.pieceHeight, width));
       }
     }
@@ -102,6 +110,21 @@ export class Canvas {
       .map(({ el }) => el);
     this.drawAdd();
   }
+
+  /*  public drawAll() {
+    if (this.context) {
+      this.context.strokeStyle = 'green';
+      for (let i = 0; i < this.pieces.length; i += 1) {
+        for (let j = 0; j < this.pieces[i].length; j += 1) {
+        this.pieces[i][j].draw(this.context, this.sizeMain.x, this.sizeMain.y);
+        this.sizeMain.x += this.pieces[i][j].getWidth();
+        }
+        this.sizeMain.x = 0;
+        this.sizeMain.y += this.pieceHeight;
+      }
+      this.context.strokeStyle = 'black';
+    }
+  } */
 
   public drawAdd() {
     if (this.context) {
