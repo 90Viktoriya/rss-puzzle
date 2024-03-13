@@ -3,9 +3,15 @@ import './mainPage.css';
 import { Canvas } from '../components/canvas';
 import { Game } from '../components/currentGame';
 
-const currentGame = new Game(1, 0);
-const mainCanvas = new Canvas(window.innerWidth * 0.8, window.innerHeight * 0.8, currentGame.getSentences(), 0);
+const currentGame = new Game(1, 0, 9);
+let mainCanvas = new Canvas(
+  window.innerWidth * 0.8,
+  window.innerHeight * 0.8,
+  currentGame.getSentences(),
+  currentGame.getSentenceID()
+);
 
+let canvasElement = mainCanvas.getCanvas();
 /* var img = new Image();
 img.onload = function() {
   let scale = Math.min(canvas.width/img.width,canvas.height/img.height);
@@ -18,11 +24,39 @@ img.onload = function() {
 };
 img.src = 'https://raw.githubusercontent.com/rolling-scopes-school/rss-puzzle-data/main/images/level1/9th_wave.jpg';
 */
+function changeSentence() {
+  const btn = document.querySelector('.mainPage_button-continue');
+  btn?.classList.add('mainPage_button-disable');
+  if (currentGame.nextSentence()) {
+    console.log(currentGame.getSentenceID());
+    mainCanvas.nextSentence();
+  } else {
+    console.log(currentGame.getSentenceID());
+    console.log(currentGame.getSentences());
+    mainCanvas = new Canvas(
+      window.innerWidth * 0.8,
+      window.innerHeight * 0.8,
+      currentGame.getSentences(),
+      currentGame.getSentenceID()
+    );
+    canvasElement = mainCanvas.getCanvas();
+    document.querySelector('.mainPage_canvas')?.replaceWith(canvasElement);
+  }
+}
+
 export const mainPage = () =>
   new BaseComponent(
     { tag: 'div', className: 'mainPage_wrapper' },
     new BaseComponent({ tag: 'div', className: 'mainPage_menu-wrapper' }),
-    mainCanvas.getCanvas()
+    canvasElement,
+    new BaseComponent({
+      tag: 'div',
+      textContent: 'Continue',
+      className: 'mainPage_button-continue mainPage_button-disable',
+      onclick: () => {
+        changeSentence();
+      }
+    })
   );
 
 export default mainPage;

@@ -8,5 +8,20 @@
 .mainPage_menu-wrapper{
   min-height: 100px;
 }
+.mainPage_button-continue{
+  position: relative;
+  top: -40px;
+  font-size: 36px;
+  text-align: center;
+  width: 40%;
+  padding: 20px;
+  background-color: var(--brown);
+  border: 2px outset var(--dark);
+  border-radius: 15px;
+  cursor: pointer;
+}
+.mainPage_button-disable{
+  display: none;
+}
 
 

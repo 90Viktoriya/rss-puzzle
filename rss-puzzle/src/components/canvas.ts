@@ -24,10 +24,15 @@ export class Canvas {
 
   private emptyPieces: Array<Piece>;
 
+  private result: Array<string>;
+
+  private sentences;
+
   constructor(width: number, height: number, sentences: Array<Array<string>>, curRowID: number) {
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
     this.canvas.className = 'mainPage_canvas';
+    this.sentences = sentences;
     this.currentRowID = curRowID;
     this.canvas.width = width;
     this.canvas.height = height;
@@ -54,8 +59,10 @@ export class Canvas {
     this.piecesAdd = [];
     this.piecesResult = [];
     this.emptyPieces = [];
+    this.result = sentences[curRowID];
     this.createPieces(sentences);
     this.drawRect(this.sizeMain.x, this.sizeMain.y, this.sizeMain.width, this.sizeMain.height);
+    this.drawAll();
     this.initAdd();
     this.initResult();
     this.canvas.addEventListener('click', (evt) => {
@@ -64,7 +71,6 @@ export class Canvas {
   }
 
   private reDraw(pieces: Array<Piece>, index: number) {
-    console.log(pieces[index]);
     let x = 0;
     let y = 0;
     if (pieces[index].getPlace() === 'source') y = this.sizeAdd.y;
@@ -89,9 +95,8 @@ export class Canvas {
     }
   }
 
-  private findEmptyPiece(pieces: Array<Piece>) {
-    for (let i = 0; i < pieces.length; i += 1)
-      if (pieces[i].getWidth() === this.emptyPieces[this.currentRowID].getWidth()) return i;
+  static findEmptyPiece(pieces: Array<Piece>) {
+    for (let i = 0; i < pieces.length; i += 1) if (pieces[i].getText() === '') return i;
     return -1;
   }
 
@@ -106,20 +111,30 @@ export class Canvas {
   }
 
   private moveToAdd(piece: Piece, index: number) {
-    const currentIndex = this.findEmptyPiece(this.piecesAdd);
+    const currentIndex = Canvas.findEmptyPiece(this.piecesAdd);
     piece.setPlace('source');
-    console.log(currentIndex);
     this.insertPiece(currentIndex, piece);
     this.emptyPieces[this.currentRowID].setPlace('result');
     this.removePiece(index);
   }
 
+  private checkResult() {
+    for (let i = 0; i < this.result.length; i += 1) {
+      if (this.result[i] !== this.piecesResult[i].getText()) return false;
+    }
+    this.clearRect(0, this.sizeAdd.y, this.sizeAdd.width, this.sizeAdd.height);
+    const btn = document.querySelector('.mainPage_button-continue');
+    btn?.classList.remove('mainPage_button-disable');
+    return true;
+  }
+
   private moveToResult(piece: Piece, index: number) {
-    const currentIndex = this.findEmptyPiece(this.piecesResult);
+    const currentIndex = Canvas.findEmptyPiece(this.piecesResult);
     piece.setPlace('result');
     this.insertPiece(currentIndex, piece);
     this.emptyPieces[this.currentRowID].setPlace('source');
     this.removePiece(index);
+    if (Canvas.findEmptyPiece(this.piecesResult) === -1) this.checkResult();
   }
 
   private moveCurrentPiece(piece: Piece) {
@@ -179,20 +194,20 @@ export class Canvas {
     }
   }
 
-  /*  public drawAll() {
+  public drawAll() {
     if (this.context) {
-      this.context.strokeStyle = 'green';
-      for (let i = 0; i < this.pieces.length; i += 1) {
+      // this.context.strokeStyle = 'green';
+      for (let i = 0; i < this.currentRowID; i += 1) {
         for (let j = 0; j < this.pieces[i].length; j += 1) {
-        this.pieces[i][j].draw(this.context, this.sizeMain.x, this.sizeMain.y);
-        this.sizeMain.x += this.pieces[i][j].getWidth();
+          this.pieces[i][j].draw(this.context, this.sizeMain.x, this.sizeMain.y);
+          this.sizeMain.x += this.pieces[i][j].getWidth();
         }
         this.sizeMain.x = 0;
         this.sizeMain.y += this.pieceHeight;
       }
-      this.context.strokeStyle = 'black';
+      // this.context.strokeStyle = 'black';
     }
-  } */
+  }
 
   public drawAdd() {
     if (this.context) {
@@ -226,6 +241,17 @@ export class Canvas {
       this.piecesResult.push(this.emptyPieces[this.currentRowID]);
     this.drawResult();
     this.clearRect(this.sizeResult.x, this.sizeResult.y, this.sizeResult.width, this.sizeResult.height);
+  }
+
+  public nextSentence() {
+    this.currentRowID += 1;
+    this.sizeResult.x = 0;
+    this.sizeResult.y = this.currentRowID * this.pieceHeight;
+    this.sizeAdd.x = 0;
+    this.piecesResult = [];
+    this.result = this.sentences[this.currentRowID];
+    this.initAdd();
+    this.initResult();
   }
 
   public getCanvas() {

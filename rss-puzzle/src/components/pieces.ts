@@ -42,6 +42,10 @@ export class Piece {
     return this.place;
   }
 
+  getText() {
+    return this.text;
+  }
+
   setPlace(newValue: Place) {
     this.place = newValue;
   }
