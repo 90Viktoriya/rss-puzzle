@@ -20,6 +20,17 @@
   border-radius: 15px;
   cursor: pointer;
 }
+.mainPage_button-check{
+  margin-top: 30px;
+  font-size: 36px;
+  text-align: center;
+  width: 20%;
+  padding: 20px;
+  background-color: var(--brown);
+  border: 2px outset var(--dark);
+  border-radius: 15px;
+  cursor: pointer;
+}
 .mainPage_button-disable{
   display: none;
 }

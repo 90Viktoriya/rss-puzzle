@@ -70,12 +70,28 @@ export class Piece {
     context.fillText(this.text, x + this.width / 2, y + this.height / 2);
   }
 
+  public markError(context: CanvasRenderingContext2D) {
+    context.beginPath();
+    context.strokeStyle = 'red';
+    context.rect(this.x, this.y, this.width, this.height);
+    context.stroke();
+    context.strokeStyle = 'black';
+  }
+
+  public markRight(context: CanvasRenderingContext2D) {
+    context.beginPath();
+    context.strokeStyle = 'green';
+    context.rect(this.x, this.y, this.width, this.height);
+    context.stroke();
+    context.strokeStyle = 'black';
+  }
+
   public checkPress(loc: MouseEvent) {
     let x = 0;
     let y = 0;
     if (loc.target instanceof HTMLElement) {
-      x = loc.x - loc.target.offsetLeft;
-      y = loc.y - loc.target.offsetTop;
+      x = loc.pageX - loc.target.offsetLeft;
+      y = loc.pageY - loc.target.offsetTop;
     }
     if (x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height) return true;
     return false;

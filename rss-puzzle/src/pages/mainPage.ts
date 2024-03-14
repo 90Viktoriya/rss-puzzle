@@ -28,11 +28,8 @@ function changeSentence() {
   const btn = document.querySelector('.mainPage_button-continue');
   btn?.classList.add('mainPage_button-disable');
   if (currentGame.nextSentence()) {
-    console.log(currentGame.getSentenceID());
     mainCanvas.nextSentence();
   } else {
-    console.log(currentGame.getSentenceID());
-    console.log(currentGame.getSentences());
     mainCanvas = new Canvas(
       window.innerWidth * 0.8,
       window.innerHeight * 0.8,
@@ -42,6 +39,10 @@ function changeSentence() {
     canvasElement = mainCanvas.getCanvas();
     document.querySelector('.mainPage_canvas')?.replaceWith(canvasElement);
   }
+}
+
+function checkSentence() {
+  mainCanvas.checkSentence();
 }
 
 export const mainPage = () =>
@@ -55,6 +56,14 @@ export const mainPage = () =>
       className: 'mainPage_button-continue mainPage_button-disable',
       onclick: () => {
         changeSentence();
+      }
+    }),
+    new BaseComponent({
+      tag: 'div',
+      textContent: 'Check',
+      className: 'mainPage_button-check mainPage_button-disable',
+      onclick: () => {
+        checkSentence();
       }
     })
   );

@@ -28,6 +28,8 @@ export class Canvas {
 
   private sentences;
 
+  private dontMove;
+
   constructor(width: number, height: number, sentences: Array<Array<string>>, curRowID: number) {
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
@@ -60,14 +62,13 @@ export class Canvas {
     this.piecesResult = [];
     this.emptyPieces = [];
     this.result = sentences[curRowID];
+    this.dontMove = false;
     this.createPieces(sentences);
     this.drawRect(this.sizeMain.x, this.sizeMain.y, this.sizeMain.width, this.sizeMain.height);
     this.drawAll();
     this.initAdd();
     this.initResult();
-    this.canvas.addEventListener('click', (evt) => {
-      this.onClick(evt, this.pieces[this.currentRowID]);
-    });
+    this.addListener();
   }
 
   private reDraw(pieces: Array<Piece>, index: number) {
@@ -120,9 +121,14 @@ export class Canvas {
 
   private checkResult() {
     for (let i = 0; i < this.result.length; i += 1) {
-      if (this.result[i] !== this.piecesResult[i].getText()) return false;
+      if (this.result[i] !== this.piecesResult[i].getText()) {
+        const btn = document.querySelector('.mainPage_button-check');
+        btn?.classList.remove('mainPage_button-disable');
+        return false;
+      }
     }
     this.clearRect(0, this.sizeAdd.y, this.sizeAdd.width, this.sizeAdd.height);
+    this.disableClick();
     const btn = document.querySelector('.mainPage_button-continue');
     btn?.classList.remove('mainPage_button-disable');
     return true;
@@ -138,6 +144,7 @@ export class Canvas {
   }
 
   private moveCurrentPiece(piece: Piece) {
+    if (this.dontMove) return;
     for (let i = 0; i < this.piecesAdd.length; i += 1) {
       if (this.piecesAdd[i].getColID() === piece.getColID()) {
         if (this.piecesAdd[i].getPlace() === 'source') {
@@ -155,10 +162,14 @@ export class Canvas {
   }
 
   public onClick(evt: MouseEvent, currentPieces: Piece[]) {
-    for (let i = 0; i < currentPieces.length; i += 1) {
-      if (currentPieces[i].checkPress(evt)) {
-        this.moveCurrentPiece(currentPieces[i]);
-        return;
+    if (evt.target instanceof HTMLElement) {
+      for (let i = 0; i < currentPieces.length; i += 1) {
+        if (currentPieces[i].checkPress(evt)) {
+          const btn = document.querySelector('.mainPage_button-check');
+          btn?.classList.add('mainPage_button-disable');
+          this.moveCurrentPiece(currentPieces[i]);
+          return;
+        }
       }
     }
   }
@@ -196,7 +207,6 @@ export class Canvas {
 
   public drawAll() {
     if (this.context) {
-      // this.context.strokeStyle = 'green';
       for (let i = 0; i < this.currentRowID; i += 1) {
         for (let j = 0; j < this.pieces[i].length; j += 1) {
           this.pieces[i][j].draw(this.context, this.sizeMain.x, this.sizeMain.y);
@@ -205,13 +215,11 @@ export class Canvas {
         this.sizeMain.x = 0;
         this.sizeMain.y += this.pieceHeight;
       }
-      // this.context.strokeStyle = 'black';
     }
   }
 
   public drawAdd() {
     if (this.context) {
-      //  this.context.strokeStyle = 'green';
       for (let i = 0; i < this.piecesAdd.length; i += 1) {
         this.piecesAdd[i].draw(this.context, this.sizeAdd.x, this.sizeAdd.y);
         this.sizeAdd.x += this.piecesAdd[i].getWidth();
@@ -250,8 +258,27 @@ export class Canvas {
     this.sizeAdd.x = 0;
     this.piecesResult = [];
     this.result = this.sentences[this.currentRowID];
+    this.dontMove = false;
     this.initAdd();
     this.initResult();
+  }
+
+  public checkSentence() {
+    if (this.context === null) return;
+    for (let i = 0; i < this.result.length; i += 1) {
+      if (this.result[i] !== this.piecesResult[i].getText()) this.piecesResult[i].markError(this.context);
+      else this.piecesResult[i].markRight(this.context);
+    }
+  }
+
+  private addListener() {
+    this.canvas.addEventListener('click', (evt) => {
+      this.onClick(evt, this.pieces[this.currentRowID]);
+    });
+  }
+
+  private disableClick() {
+    this.dontMove = true;
   }
 
   public getCanvas() {
