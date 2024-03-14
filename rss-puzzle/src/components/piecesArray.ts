@@ -27,11 +27,11 @@ export class PieceArray extends Array {
 
   public draw(context: CanvasRenderingContext2D | null) {
     if (context === null) return;
+    context.clearRect(this.x - 1, this.y - 1, this.width + 1, this.height + 3);
     for (let i = 0; i < this.pieces.length; i += 1) {
       this.pieces[i].draw(context, this.x, this.y);
       this.x += this.pieces[i].getWidth();
     }
-    context.clearRect(this.x - 1, this.y - 1, this.width + 1, this.height + 3);
   }
 
   public checkMove(piece: Piece, place: Place): { piece: Piece; index: number } | null {

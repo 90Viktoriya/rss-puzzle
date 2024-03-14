@@ -133,10 +133,16 @@ export class Canvas {
       const widthParam = this.calculateWidthParam(sentences[i]);
       for (let j = 0; j < sentences[i].length; j += 1) {
         const width = widthParam * (sentences[i][j].length + 1);
-        this.pieces[i].push(new Piece(i, j, sentences[i][j], x, y, this.pieceHeight, width));
+        let rightTab;
+        if (j === sentences[i].length - 1) rightTab = 0;
+        else rightTab = 0.5;
+        let leftTab;
+        if (j === 0) leftTab = 0;
+        else leftTab = -0.5;
+        this.pieces[i].push(new Piece(i, j, sentences[i][j], x, y, this.pieceHeight, width, leftTab, rightTab));
         x += this.pieces[i][j].getWidth();
       }
-      this.emptyPieces.push(new Piece(i, -1, '', x, y, this.pieceHeight, widthParam * 2));
+      this.emptyPieces.push(new Piece(i, -1, '', x, y, this.pieceHeight, widthParam * 2, 0, 0));
       x = 0;
       y += this.pieceHeight;
     }

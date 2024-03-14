@@ -17,6 +17,10 @@ export class Piece {
 
   private place: Place;
 
+  private leftTab;
+
+  private rightTab;
+
   constructor(
     rowID: number,
     colID: number,
@@ -24,7 +28,9 @@ export class Piece {
     x: number,
     y: number,
     pieceHeight: number,
-    pieceWidth: number
+    pieceWidth: number,
+    leftTab: number,
+    rightTab: number
   ) {
     this.rowID = rowID;
     this.colID = colID;
@@ -34,6 +40,8 @@ export class Piece {
     this.height = pieceHeight;
     this.width = pieceWidth;
     this.place = 'source';
+    this.leftTab = leftTab;
+    this.rightTab = rightTab;
   }
 
   getColID() {
@@ -60,16 +68,47 @@ export class Piece {
     this.place = newValue;
   }
 
+  getRightTab() {
+    return this.rightTab;
+  }
+
+  private drawRect(context: CanvasRenderingContext2D) {
+    const neck = 0.2 * this.height;
+    const tabSize = 0.35 * this.height;
+    context.beginPath();
+    context.moveTo(this.x, this.y);
+    context.lineTo(this.x + this.width, this.y);
+    if (this.rightTab) {
+      context.lineTo(this.x + this.width, this.y + this.height * this.rightTab - neck);
+      context.lineTo(this.x + this.width + tabSize * Math.sign(this.rightTab), this.y + this.height * this.rightTab);
+      context.lineTo(this.x + this.width, this.y + this.height * this.rightTab + neck);
+    }
+    context.lineTo(this.x + this.width, this.y + this.height);
+    context.lineTo(this.x, this.y + this.height);
+    if (this.leftTab) {
+      context.lineTo(this.x, this.y - this.height * this.leftTab + neck);
+      context.lineTo(this.x - tabSize * Math.sign(this.leftTab), this.y - this.height * this.leftTab);
+      context.lineTo(this.x, this.y - this.height * this.leftTab - neck);
+    }
+    context.lineTo(this.x, this.y);
+  }
+
   public draw(context: CanvasRenderingContext2D | null, x?: number, y?: number) {
     if (context === null) return;
-    context.beginPath();
+
     if (typeof x !== 'undefined') this.x = x;
     if (typeof y !== 'undefined') this.y = y;
-    context.fillStyle = '#A66A2C';
+
+    this.drawRect(context);
+    /* context.fillStyle = '#A66A2C';
     context.fillRect(this.x, this.y, this.width, this.height);
-    context.fillStyle = 'black';
-    context.rect(this.x, this.y, this.width, this.height);
+    context.fillStyle = 'black'; */
+    // context.rect(this.x, this.y, this.width, this.height);
+
+    context.fillStyle = '#A66A2C';
+    context.fill();
     context.stroke();
+    context.fillStyle = 'black';
     context.font = '24px Arial';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
@@ -77,17 +116,19 @@ export class Piece {
   }
 
   public markError(context: CanvasRenderingContext2D) {
-    context.beginPath();
+    // context.beginPath();
     context.strokeStyle = 'red';
-    context.rect(this.x, this.y, this.width, this.height);
+    this.drawRect(context);
+    // context.rect(this.x, this.y, this.width, this.height);
     context.stroke();
     context.strokeStyle = 'black';
   }
 
   public markRight(context: CanvasRenderingContext2D) {
-    context.beginPath();
+    // context.beginPath();
     context.strokeStyle = 'green';
-    context.rect(this.x, this.y, this.width, this.height);
+    this.drawRect(context);
+    // context.rect(this.x, this.y, this.width, this.height);
     context.stroke();
     context.strokeStyle = 'black';
   }
