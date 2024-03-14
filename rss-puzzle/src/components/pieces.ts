@@ -17,10 +17,20 @@ export class Piece {
 
   private place: Place;
 
-  constructor(rowID: number, colID: number, text: string, pieceHeight: number, pieceWidth: number) {
+  constructor(
+    rowID: number,
+    colID: number,
+    text: string,
+    x: number,
+    y: number,
+    pieceHeight: number,
+    pieceWidth: number
+  ) {
     this.rowID = rowID;
     this.colID = colID;
     this.text = text;
+    this.x = x;
+    this.y = y;
     this.height = pieceHeight;
     this.width = pieceWidth;
     this.place = 'source';
@@ -50,24 +60,20 @@ export class Piece {
     this.place = newValue;
   }
 
-  public delete(context: CanvasRenderingContext2D) {
-    this.place = 'result';
-    context.clearRect(this.x, this.y, this.width, this.height);
-  }
-
-  public draw(context: CanvasRenderingContext2D, x: number, y: number) {
+  public draw(context: CanvasRenderingContext2D | null, x?: number, y?: number) {
+    if (context === null) return;
     context.beginPath();
-    this.x = x;
-    this.y = y;
+    if (typeof x !== 'undefined') this.x = x;
+    if (typeof y !== 'undefined') this.y = y;
     context.fillStyle = '#A66A2C';
-    context.fillRect(x, y, this.width, this.height);
+    context.fillRect(this.x, this.y, this.width, this.height);
     context.fillStyle = 'black';
-    context.rect(x, y, this.width, this.height);
+    context.rect(this.x, this.y, this.width, this.height);
     context.stroke();
     context.font = '24px Arial';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText(this.text, x + this.width / 2, y + this.height / 2);
+    context.fillText(this.text, this.x + this.width / 2, this.y + this.height / 2);
   }
 
   public markError(context: CanvasRenderingContext2D) {

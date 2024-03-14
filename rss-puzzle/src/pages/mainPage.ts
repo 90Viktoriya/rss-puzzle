@@ -3,7 +3,7 @@ import './mainPage.css';
 import { Canvas } from '../components/canvas';
 import { Game } from '../components/currentGame';
 
-const currentGame = new Game(1, 0, 9);
+const currentGame = new Game(1, 0, 8);
 let mainCanvas = new Canvas(
   window.innerWidth * 0.8,
   window.innerHeight * 0.8,
@@ -42,7 +42,7 @@ function changeSentence() {
 }
 
 function checkSentence() {
-  mainCanvas.checkSentence();
+  mainCanvas.checkAndMark();
 }
 
 export const mainPage = () =>

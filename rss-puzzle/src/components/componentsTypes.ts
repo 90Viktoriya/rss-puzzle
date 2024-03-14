@@ -8,10 +8,5 @@ export type Props = {
   required?: string;
   onclick?(): void;
 };
-export type Size = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
+
 export type Place = 'source' | 'result';

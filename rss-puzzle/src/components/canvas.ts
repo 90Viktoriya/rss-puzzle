@@ -1,16 +1,12 @@
 import { Piece } from './pieces';
-import { Size } from './componentsTypes';
+import { PieceArray } from './piecesArray';
 
 export class Canvas {
   private canvas;
 
   private context;
 
-  private sizeMain: Size;
-
-  private sizeAdd: Size;
-
-  private sizeResult: Size;
+  private width;
 
   private pieceHeight;
 
@@ -18,9 +14,9 @@ export class Canvas {
 
   private currentRowID;
 
-  private piecesAdd: Array<Piece>;
+  private piecesAdd: PieceArray;
 
-  private piecesResult: Array<Piece>;
+  private piecesResult: PieceArray;
 
   private emptyPieces: Array<Piece>;
 
@@ -39,125 +35,75 @@ export class Canvas {
     this.canvas.width = width;
     this.canvas.height = height;
     this.pieceHeight = height / (sentences.length + 2);
-    this.sizeMain = {
-      width,
-      height: sentences.length * this.pieceHeight,
-      x: 0,
-      y: 0
-    };
-    this.sizeAdd = {
-      width,
-      height: this.pieceHeight,
-      x: 0,
-      y: (sentences.length + 1) * this.pieceHeight
-    };
-    this.sizeResult = {
-      width,
-      height: this.pieceHeight,
-      x: 0,
-      y: this.currentRowID * this.pieceHeight
-    };
+    this.width = width;
     this.pieces = [];
-    this.piecesAdd = [];
-    this.piecesResult = [];
     this.emptyPieces = [];
     this.result = sentences[curRowID];
     this.dontMove = false;
     this.createPieces(sentences);
-    this.drawRect(this.sizeMain.x, this.sizeMain.y, this.sizeMain.width, this.sizeMain.height);
+    this.piecesAdd = new PieceArray(
+      this.pieces[this.currentRowID]
+        .map((el) => ({ el, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ el }) => el),
+      0,
+      (this.sentences.length + 1) * this.pieceHeight,
+      this.width,
+      this.pieceHeight
+    );
+    this.piecesResult = new PieceArray(
+      Array(this.pieces[this.currentRowID].length).fill(this.emptyPieces[this.currentRowID]),
+      0,
+      this.currentRowID * this.pieceHeight,
+      this.width,
+      this.pieceHeight
+    );
     this.drawAll();
-    this.initAdd();
-    this.initResult();
     this.addListener();
   }
 
-  private reDraw(pieces: Array<Piece>, index: number) {
-    let x = 0;
-    let y = 0;
-    if (pieces[index].getPlace() === 'source') y = this.sizeAdd.y;
-    else y = this.sizeResult.y;
-    for (let i = 0; i < index; i += 1) x += pieces[i].getWidth();
-    if (this.context) {
-      for (let i = index; i < pieces.length; i += 1) {
-        pieces[i].draw(this.context, x, y);
-        x += pieces[i].getWidth();
-      }
-      this.clearRect(x, y, this.sizeMain.width, this.pieceHeight);
-    }
-  }
-
-  private insertPiece(index: number, piece: Piece) {
-    if (piece.getPlace() === 'source') {
-      this.piecesAdd[index] = piece;
-      this.reDraw(this.piecesAdd, index);
-    } else {
-      this.piecesResult[index] = piece;
-      this.reDraw(this.piecesResult, index);
-    }
-  }
-
-  static findEmptyPiece(pieces: Array<Piece>) {
-    for (let i = 0; i < pieces.length; i += 1) if (pieces[i].getText() === '') return i;
-    return -1;
-  }
-
-  private removePiece(index: number) {
-    if (this.emptyPieces[this.currentRowID].getPlace() === 'source') {
-      this.piecesAdd[index] = this.emptyPieces[this.currentRowID];
-      this.reDraw(this.piecesAdd, index);
-    } else {
-      this.piecesResult[index] = this.emptyPieces[this.currentRowID];
-      this.reDraw(this.piecesResult, index);
-    }
-  }
-
-  private moveToAdd(piece: Piece, index: number) {
-    const currentIndex = Canvas.findEmptyPiece(this.piecesAdd);
-    piece.setPlace('source');
-    this.insertPiece(currentIndex, piece);
-    this.emptyPieces[this.currentRowID].setPlace('result');
-    this.removePiece(index);
-  }
-
   private checkResult() {
-    for (let i = 0; i < this.result.length; i += 1) {
-      if (this.result[i] !== this.piecesResult[i].getText()) {
-        const btn = document.querySelector('.mainPage_button-check');
-        btn?.classList.remove('mainPage_button-disable');
-        return false;
-      }
+    if (this.piecesResult.checkOrder()) {
+      this.disableClick();
+      const btn = document.querySelector('.mainPage_button-continue');
+      btn?.classList.remove('mainPage_button-disable');
+      return true;
     }
-    this.clearRect(0, this.sizeAdd.y, this.sizeAdd.width, this.sizeAdd.height);
-    this.disableClick();
-    const btn = document.querySelector('.mainPage_button-continue');
+    const btn = document.querySelector('.mainPage_button-check');
     btn?.classList.remove('mainPage_button-disable');
-    return true;
+    return false;
   }
 
-  private moveToResult(piece: Piece, index: number) {
-    const currentIndex = Canvas.findEmptyPiece(this.piecesResult);
-    piece.setPlace('result');
-    this.insertPiece(currentIndex, piece);
-    this.emptyPieces[this.currentRowID].setPlace('source');
-    this.removePiece(index);
-    if (Canvas.findEmptyPiece(this.piecesResult) === -1) this.checkResult();
+  private moveTo(piece: Piece, index: number) {
+    if (piece.getPlace() === 'source') {
+      piece.setPlace('result');
+      this.piecesResult.insertPiece(piece);
+      this.emptyPieces[this.currentRowID].setPlace('source');
+      this.piecesAdd.insertPiece(this.emptyPieces[this.currentRowID], index);
+      if (this.piecesResult.findEmpty() === -1) this.checkResult();
+    } else {
+      piece.setPlace('source');
+      this.piecesAdd.insertPiece(piece);
+      this.emptyPieces[this.currentRowID].setPlace('result');
+      this.piecesResult.insertPiece(this.emptyPieces[this.currentRowID], index);
+    }
+    this.piecesAdd.clearX();
+    this.piecesResult.clearX();
+    this.piecesAdd.draw(this.context);
+    this.piecesResult.draw(this.context);
+    if (this.dontMove) this.piecesAdd.clear(this.context);
   }
 
   private moveCurrentPiece(piece: Piece) {
     if (this.dontMove) return;
-    for (let i = 0; i < this.piecesAdd.length; i += 1) {
-      if (this.piecesAdd[i].getColID() === piece.getColID()) {
-        if (this.piecesAdd[i].getPlace() === 'source') {
-          this.moveToResult(this.piecesAdd[i], i);
-          return;
-        }
-      }
-      if (this.piecesResult[i].getColID() === piece.getColID()) {
-        if (this.piecesResult[i].getPlace() === 'result') {
-          this.moveToAdd(this.piecesResult[i], i);
-          return;
-        }
-      }
+    let checkResult = this.piecesAdd.checkMove(piece, 'source');
+    if (checkResult !== null) {
+      this.moveTo(checkResult.piece, checkResult.index);
+      return;
+    }
+    checkResult = this.piecesResult.checkMove(piece, 'result');
+    if (checkResult !== null) {
+      this.moveTo(checkResult.piece, checkResult.index);
     }
   }
 
@@ -174,101 +120,64 @@ export class Canvas {
     }
   }
 
-  public clearRect(x: number, y: number, width: number, height: number) {
-    if (!this.context) return;
-    this.context.clearRect(x, y, width, height);
-  }
-
-  public drawRect(x: number, y: number, width: number, height: number) {
-    if (!this.context) return;
-    this.context.fillStyle = '#A66A2C';
-    this.context.beginPath();
-    this.context.fillRect(x, y, width, height);
-    this.context.rect(x, y, width, height);
-    this.context.stroke();
-  }
-
   public calculateWidthParam(sentence: Array<string>) {
     const letterCount = sentence.toString().length + 1;
-    return this.sizeMain.width / letterCount;
+    return this.width / letterCount;
   }
 
   public createPieces(sentences: Array<Array<string>>) {
+    let x = 0;
+    let y = 0;
     for (let i = 0; i < sentences.length; i += 1) {
       this.pieces.push([]);
       const widthParam = this.calculateWidthParam(sentences[i]);
       for (let j = 0; j < sentences[i].length; j += 1) {
         const width = widthParam * (sentences[i][j].length + 1);
-        this.pieces[i].push(new Piece(i, j, sentences[i][j], this.pieceHeight, width));
+        this.pieces[i].push(new Piece(i, j, sentences[i][j], x, y, this.pieceHeight, width));
+        x += this.pieces[i][j].getWidth();
       }
-      this.emptyPieces.push(new Piece(i, -1, '', this.pieceHeight, widthParam * 2));
+      this.emptyPieces.push(new Piece(i, -1, '', x, y, this.pieceHeight, widthParam * 2));
+      x = 0;
+      y += this.pieceHeight;
     }
   }
 
   public drawAll() {
-    if (this.context) {
-      for (let i = 0; i < this.currentRowID; i += 1) {
-        for (let j = 0; j < this.pieces[i].length; j += 1) {
-          this.pieces[i][j].draw(this.context, this.sizeMain.x, this.sizeMain.y);
-          this.sizeMain.x += this.pieces[i][j].getWidth();
-        }
-        this.sizeMain.x = 0;
-        this.sizeMain.y += this.pieceHeight;
+    for (let i = 0; i < this.currentRowID; i += 1) {
+      for (let j = 0; j < this.pieces[i].length; j += 1) {
+        this.pieces[i][j].draw(this.context);
       }
     }
-  }
-
-  public drawAdd() {
-    if (this.context) {
-      for (let i = 0; i < this.piecesAdd.length; i += 1) {
-        this.piecesAdd[i].draw(this.context, this.sizeAdd.x, this.sizeAdd.y);
-        this.sizeAdd.x += this.piecesAdd[i].getWidth();
-      }
-    }
-  }
-
-  public drawResult() {
-    if (this.context) {
-      for (let i = 0; i < this.piecesResult.length; i += 1) {
-        this.piecesResult[i].draw(this.context, this.sizeResult.x, this.sizeResult.y);
-        this.sizeResult.x += this.piecesResult[i].getWidth();
-      }
-    }
-  }
-
-  public initAdd() {
-    this.piecesAdd = this.pieces[this.currentRowID]
-      .map((el) => ({ el, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ el }) => el);
-    this.drawAdd();
-  }
-
-  public initResult() {
-    for (let i = 0; i < this.pieces[this.currentRowID].length; i += 1)
-      this.piecesResult.push(this.emptyPieces[this.currentRowID]);
-    this.drawResult();
-    this.clearRect(this.sizeResult.x, this.sizeResult.y, this.sizeResult.width, this.sizeResult.height);
+    this.piecesAdd.draw(this.context);
+    this.piecesResult.draw(this.context);
   }
 
   public nextSentence() {
     this.currentRowID += 1;
-    this.sizeResult.x = 0;
-    this.sizeResult.y = this.currentRowID * this.pieceHeight;
-    this.sizeAdd.x = 0;
-    this.piecesResult = [];
     this.result = this.sentences[this.currentRowID];
     this.dontMove = false;
-    this.initAdd();
-    this.initResult();
+    this.piecesAdd = new PieceArray(
+      this.pieces[this.currentRowID]
+        .map((el) => ({ el, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ el }) => el),
+      0,
+      (this.sentences.length + 1) * this.pieceHeight,
+      this.width,
+      this.pieceHeight
+    );
+    this.piecesResult = new PieceArray(
+      Array(this.pieces[this.currentRowID].length).fill(this.emptyPieces[this.currentRowID]),
+      0,
+      this.currentRowID * this.pieceHeight,
+      this.width,
+      this.pieceHeight
+    );
+    this.drawAll();
   }
 
-  public checkSentence() {
-    if (this.context === null) return;
-    for (let i = 0; i < this.result.length; i += 1) {
-      if (this.result[i] !== this.piecesResult[i].getText()) this.piecesResult[i].markError(this.context);
-      else this.piecesResult[i].markRight(this.context);
-    }
+  public checkAndMark() {
+    this.piecesResult.checkAndMark(this.context);
   }
 
   private addListener() {
