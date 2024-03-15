@@ -21,6 +21,12 @@ export class Piece {
 
   private rightTab;
 
+  private img;
+
+  private scale;
+
+  private resultX;
+
   constructor(
     rowID: number,
     colID: number,
@@ -30,7 +36,10 @@ export class Piece {
     pieceHeight: number,
     pieceWidth: number,
     leftTab: number,
-    rightTab: number
+    rightTab: number,
+    img: HTMLImageElement,
+    scale: number,
+    resultX: number
   ) {
     this.rowID = rowID;
     this.colID = colID;
@@ -42,6 +51,9 @@ export class Piece {
     this.place = 'source';
     this.leftTab = leftTab;
     this.rightTab = rightTab;
+    this.img = img;
+    this.scale = scale;
+    this.resultX = resultX;
   }
 
   getColID() {
@@ -74,7 +86,7 @@ export class Piece {
 
   private drawRect(context: CanvasRenderingContext2D) {
     const neck = 0.2 * this.height;
-    const tabSize = 0.35 * this.height;
+    const tabSize = 0.25 * this.height;
     context.beginPath();
     context.moveTo(this.x, this.y);
     context.lineTo(this.x + this.width, this.y);
@@ -99,36 +111,42 @@ export class Piece {
     if (typeof x !== 'undefined') this.x = x;
     if (typeof y !== 'undefined') this.y = y;
 
-    this.drawRect(context);
-    /* context.fillStyle = '#A66A2C';
-    context.fillRect(this.x, this.y, this.width, this.height);
-    context.fillStyle = 'black'; */
-    // context.rect(this.x, this.y, this.width, this.height);
-
-    context.fillStyle = '#A66A2C';
-    context.fill();
-    context.stroke();
     context.fillStyle = 'black';
+    context.strokeStyle = 'white';
+    context.lineWidth = 2;
+    this.drawRect(context);
+    context.save();
+    context.clip();
+    context.drawImage(
+      this.img,
+      this.resultX * this.scale,
+      this.rowID * this.height * this.scale,
+      (this.width + 0.25 * this.height) / this.scale,
+      this.height / this.scale,
+      this.x,
+      this.y,
+      this.width + 0.25 * this.height,
+      this.height
+    );
+    context.restore();
+    context.stroke();
     context.font = '24px Arial';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
+    context.strokeText(this.text, this.x + this.width / 2, this.y + this.height / 2);
     context.fillText(this.text, this.x + this.width / 2, this.y + this.height / 2);
   }
 
   public markError(context: CanvasRenderingContext2D) {
-    // context.beginPath();
     context.strokeStyle = 'red';
     this.drawRect(context);
-    // context.rect(this.x, this.y, this.width, this.height);
     context.stroke();
     context.strokeStyle = 'black';
   }
 
   public markRight(context: CanvasRenderingContext2D) {
-    // context.beginPath();
     context.strokeStyle = 'green';
     this.drawRect(context);
-    // context.rect(this.x, this.y, this.width, this.height);
     context.stroke();
     context.strokeStyle = 'black';
   }

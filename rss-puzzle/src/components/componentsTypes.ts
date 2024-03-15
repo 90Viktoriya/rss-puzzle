@@ -9,4 +9,10 @@ export type Props = {
   onclick?(): void;
 };
 
+export type ImageElement = {
+  img: HTMLImageElement;
+  cols: number;
+  rows: number;
+};
+
 export type Place = 'source' | 'result';

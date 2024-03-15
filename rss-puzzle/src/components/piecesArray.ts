@@ -27,7 +27,7 @@ export class PieceArray extends Array {
 
   public draw(context: CanvasRenderingContext2D | null) {
     if (context === null) return;
-    context.clearRect(this.x - 1, this.y - 1, this.width + 1, this.height + 3);
+    context.clearRect(this.x - 1, this.y - 1, this.width + 20, this.height + 3);
     for (let i = 0; i < this.pieces.length; i += 1) {
       this.pieces[i].draw(context, this.x, this.y);
       this.x += this.pieces[i].getWidth();
@@ -67,7 +67,7 @@ export class PieceArray extends Array {
 
   public clear(context: CanvasRenderingContext2D | null) {
     if (context !== null) {
-      context.clearRect(0, this.y - 1, this.width + 1, this.height + 1);
+      context.clearRect(0, this.y - 1, this.width + 20, this.height + 1);
     }
   }
 }

@@ -8,6 +8,12 @@ export class Canvas {
 
   private width;
 
+  private height;
+
+  private x;
+
+  private y;
+
   private pieceHeight;
 
   private pieces: Array<Piece[]>;
@@ -26,20 +32,31 @@ export class Canvas {
 
   private dontMove;
 
-  constructor(width: number, height: number, sentences: Array<Array<string>>, curRowID: number) {
+  private img: HTMLImageElement;
+
+  private scale = 1;
+
+  constructor(width: number, height: number, sentences: Array<Array<string>>, curRowID: number, imgSrc: string) {
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
     this.canvas.className = 'mainPage_canvas';
     this.sentences = sentences;
     this.currentRowID = curRowID;
     this.canvas.width = width;
+    if (width > 1000) this.canvas.width = 1000;
+
     this.canvas.height = height;
-    this.pieceHeight = height / (sentences.length + 2);
-    this.width = width;
+    this.pieceHeight = this.canvas.height / (sentences.length + 2);
+    this.width = this.canvas.width - 20;
+    this.height = this.pieceHeight * sentences.length;
+    this.x = 0;
+    this.y = 0;
+    this.img = new Image();
     this.pieces = [];
     this.emptyPieces = [];
     this.result = sentences[curRowID];
     this.dontMove = false;
+
     this.createPieces(sentences);
     this.piecesAdd = new PieceArray(
       this.pieces[this.currentRowID]
@@ -58,7 +75,8 @@ export class Canvas {
       this.width,
       this.pieceHeight
     );
-    this.drawAll();
+    this.loadImg(imgSrc);
+    // this.drawAll();
     this.addListener();
   }
 
@@ -139,10 +157,14 @@ export class Canvas {
         let leftTab;
         if (j === 0) leftTab = 0;
         else leftTab = -0.5;
-        this.pieces[i].push(new Piece(i, j, sentences[i][j], x, y, this.pieceHeight, width, leftTab, rightTab));
+        this.pieces[i].push(
+          new Piece(i, j, sentences[i][j], x, y, this.pieceHeight, width, leftTab, rightTab, this.img, this.scale, x)
+        );
         x += this.pieces[i][j].getWidth();
       }
-      this.emptyPieces.push(new Piece(i, -1, '', x, y, this.pieceHeight, widthParam * 2, 0, 0));
+      this.emptyPieces.push(
+        new Piece(i, -1, '', x, y, this.pieceHeight, widthParam * 2, 0, 0, this.img, this.scale, -100)
+      );
       x = 0;
       y += this.pieceHeight;
     }
@@ -158,10 +180,7 @@ export class Canvas {
     this.piecesResult.draw(this.context);
   }
 
-  public nextSentence() {
-    this.currentRowID += 1;
-    this.result = this.sentences[this.currentRowID];
-    this.dontMove = false;
+  public initArg() {
     this.piecesAdd = new PieceArray(
       this.pieces[this.currentRowID]
         .map((el) => ({ el, sort: Math.random() }))
@@ -179,6 +198,13 @@ export class Canvas {
       this.width,
       this.pieceHeight
     );
+  }
+
+  public nextSentence() {
+    this.currentRowID += 1;
+    this.result = this.sentences[this.currentRowID];
+    this.dontMove = false;
+    this.initArg();
     this.drawAll();
   }
 
@@ -194,6 +220,33 @@ export class Canvas {
 
   private disableClick() {
     this.dontMove = true;
+  }
+
+  private setNewValues() {
+    this.pieceHeight = this.height / this.sentences.length;
+    this.canvas.height = this.pieceHeight * (this.sentences.length + 2);
+    this.pieces = [];
+    this.emptyPieces = [];
+
+    this.createPieces(this.sentences);
+    this.initArg();
+  }
+
+  public loadImg(imgSrc: string) {
+    this.img.src = imgSrc;
+    console.log(imgSrc);
+
+    if (this.img === null) return;
+    this.img.onload = () => {
+      const proportion = this.img.width / this.img.height;
+      this.height = this.canvas.width / proportion;
+      this.setNewValues();
+      console.log(this.height);
+      this.scale = this.width / this.img.width;
+      // this.context?.drawImage(this.img,0,0,this.img.width,this.img.height,this.x,this.y,this.width,this.height);
+
+      this.drawAll();
+    };
   }
 
   public getCanvas() {

@@ -13,6 +13,8 @@ export class Game {
 
   private sentenceID;
 
+  private imgSrc;
+
   constructor(levelID: number, roundID: number = 0, sentenceID = 0) {
     const data = levels[levelID - 1];
     this.levelID = levelID;
@@ -21,6 +23,8 @@ export class Game {
     this.roundID = roundID;
     this.round = data.rounds[roundID];
     this.sentenceID = sentenceID;
+    const imgFile = this.round.levelData.imageSrc;
+    this.imgSrc = `https://raw.githubusercontent.com/rolling-scopes-school/rss-puzzle-data/main/images/${imgFile}`;
   }
 
   private getSentence(sentenceID: number) {
@@ -30,6 +34,10 @@ export class Game {
 
   public getSentenceID() {
     return this.sentenceID;
+  }
+
+  public getImageSrc() {
+    return this.imgSrc;
   }
 
   public getSentences() {
@@ -46,6 +54,8 @@ export class Game {
     this.roundsCount = data.roundsCount;
     this.roundID = 0;
     this.round = data.rounds[this.roundID];
+    const imgFile = this.round.levelData.imageSrc;
+    this.imgSrc = `https://raw.githubusercontent.com/rolling-scopes-school/rss-puzzle-data/main/images/${imgFile}`;
   }
 
   public nextSentence() {
@@ -56,6 +66,8 @@ export class Game {
     if (this.roundID < this.roundsCount - 1) {
       this.roundID += 1;
       this.round = this.levelData[this.roundID];
+      const imgFile = this.round.levelData.imageSrc;
+      this.imgSrc = `https://raw.githubusercontent.com/rolling-scopes-school/rss-puzzle-data/main/images/${imgFile}`;
     } else {
       this.loadNewLevel();
     }

@@ -34,5 +34,8 @@
 .mainPage_button-disable{
   display: none;
 }
+.mainPage_canvas{
+  margin-bottom: 20px;
+}
 
 
