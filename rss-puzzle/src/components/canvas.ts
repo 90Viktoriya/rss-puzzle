@@ -125,12 +125,16 @@ export class Canvas {
     }
   }
 
+  static btnCheckDisable() {
+    const btn = document.querySelector('.mainPage_button-check');
+    btn?.classList.add('mainPage_button-disable');
+  }
+
   public onClick(evt: MouseEvent, currentPieces: Piece[]) {
     if (evt.target instanceof HTMLElement) {
       for (let i = 0; i < currentPieces.length; i += 1) {
         if (currentPieces[i].checkPress(evt)) {
-          const btn = document.querySelector('.mainPage_button-check');
-          btn?.classList.add('mainPage_button-disable');
+          this.btnCheckDisable();
           this.moveCurrentPiece(currentPieces[i]);
           return;
         }
@@ -251,6 +255,14 @@ export class Canvas {
 
   public getCanvas() {
     return this.canvas;
+  }
+
+  public completeSentence() {
+    this.btnCheckDisable();
+    this.piecesResult.fillInOrder(this.pieces[this.currentRowID]);
+    this.piecesResult.draw(this.context);
+    this.piecesAdd.clear(this.context);
+    this.checkResult();
   }
 }
 export default Canvas;

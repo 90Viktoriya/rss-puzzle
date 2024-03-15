@@ -70,5 +70,11 @@ export class PieceArray extends Array {
       context.clearRect(0, this.y - 1, this.width + 20, this.height + 1);
     }
   }
+
+  public fillInOrder(pieces: Array<Piece>) {
+    for (let i = 0; i < pieces.length; i += 1)
+      for (let j = 0; j < pieces.length; j += 1) if (pieces[j].getColID() === i) this.pieces[i] = pieces[j];
+    this.x = 0;
+  }
 }
 export default PieceArray;

@@ -8,12 +8,17 @@
 .mainPage_menu-wrapper{
   min-height: 100px;
 }
+.mainPage_button-wrapper{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+}
 .mainPage_button-continue{
-  position: relative;
-  top: -40px;
+  margin-top: 30px;
   font-size: 36px;
   text-align: center;
-  width: 40%;
+  width: 20%;
   padding: 20px;
   background-color: var(--brown);
   border: 2px outset var(--dark);
@@ -36,6 +41,17 @@
 }
 .mainPage_canvas{
   margin-bottom: 20px;
+}
+.mainPage_button-complete{
+  margin-top: 30px;
+  font-size: 36px;
+  text-align: center;
+  width: 20%;
+  padding: 20px;
+  background-color: var(--brown);
+  border: 2px outset var(--dark);
+  border-radius: 15px;
+  cursor: pointer;
 }
 
 

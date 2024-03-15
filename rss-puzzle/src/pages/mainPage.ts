@@ -37,28 +37,42 @@ function changeSentence() {
 function checkSentence() {
   mainCanvas.checkAndMark();
 }
+function completeSentence() {
+  mainCanvas.completeSentence();
+}
 
 export const mainPage = () =>
   new BaseComponent(
     { tag: 'div', className: 'mainPage_wrapper' },
     new BaseComponent({ tag: 'div', className: 'mainPage_menu-wrapper' }),
     canvasElement,
-    new BaseComponent({
-      tag: 'div',
-      textContent: 'Continue',
-      className: 'mainPage_button-continue mainPage_button-disable',
-      onclick: () => {
-        changeSentence();
-      }
-    }),
-    new BaseComponent({
-      tag: 'div',
-      textContent: 'Check',
-      className: 'mainPage_button-check mainPage_button-disable',
-      onclick: () => {
-        checkSentence();
-      }
-    })
+    new BaseComponent(
+      { tag: 'div', className: 'mainPage_button-wrapper' },
+      new BaseComponent({
+        tag: 'div',
+        textContent: 'Continue',
+        className: 'mainPage_button-continue mainPage_button-disable',
+        onclick: () => {
+          changeSentence();
+        }
+      }),
+      new BaseComponent({
+        tag: 'div',
+        textContent: 'Check',
+        className: 'mainPage_button-check mainPage_button-disable',
+        onclick: () => {
+          checkSentence();
+        }
+      }),
+      new BaseComponent({
+        tag: 'div',
+        textContent: 'Auto-Complete',
+        className: 'mainPage_button-complete',
+        onclick: () => {
+          completeSentence();
+        }
+      })
+    )
   );
 
 export default mainPage;
