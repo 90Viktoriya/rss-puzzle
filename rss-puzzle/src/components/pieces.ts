@@ -27,6 +27,8 @@ export class Piece {
 
   private resultX;
 
+  private tabSize;
+
   constructor(
     rowID: number,
     colID: number,
@@ -54,6 +56,8 @@ export class Piece {
     this.img = img;
     this.scale = scale;
     this.resultX = resultX;
+    if (this.rightTab === 0) this.tabSize = -this.leftTab * this.height;
+    else this.tabSize = this.rightTab * this.height;
   }
 
   getColID() {
@@ -86,21 +90,21 @@ export class Piece {
 
   private drawRect(context: CanvasRenderingContext2D) {
     const neck = 0.2 * this.height;
-    const tabSize = 0.25 * this.height;
+
     context.beginPath();
     context.moveTo(this.x, this.y);
     context.lineTo(this.x + this.width, this.y);
     if (this.rightTab) {
-      context.lineTo(this.x + this.width, this.y + this.height * this.rightTab - neck);
-      context.lineTo(this.x + this.width + tabSize * Math.sign(this.rightTab), this.y + this.height * this.rightTab);
-      context.lineTo(this.x + this.width, this.y + this.height * this.rightTab + neck);
+      context.lineTo(this.x + this.width, this.y + this.height / 2 - neck);
+      context.lineTo(this.x + this.width + this.tabSize * Math.sign(this.rightTab), this.y + this.height / 2);
+      context.lineTo(this.x + this.width, this.y + this.height / 2 + neck);
     }
     context.lineTo(this.x + this.width, this.y + this.height);
     context.lineTo(this.x, this.y + this.height);
     if (this.leftTab) {
-      context.lineTo(this.x, this.y - this.height * this.leftTab + neck);
-      context.lineTo(this.x - tabSize * Math.sign(this.leftTab), this.y - this.height * this.leftTab);
-      context.lineTo(this.x, this.y - this.height * this.leftTab - neck);
+      context.lineTo(this.x, this.y + this.height / 2 + neck);
+      context.lineTo(this.x - this.tabSize * Math.sign(this.leftTab), this.y + this.height / 2);
+      context.lineTo(this.x, this.y + this.height / 2 - neck);
     }
     context.lineTo(this.x, this.y);
   }
@@ -117,20 +121,21 @@ export class Piece {
     this.drawRect(context);
     context.save();
     context.clip();
+
     context.drawImage(
       this.img,
-      this.resultX * this.scale,
-      this.rowID * this.height * this.scale,
-      (this.width + 0.25 * this.height) / this.scale,
+      this.resultX / this.scale,
+      (this.rowID * this.height) / this.scale,
+      (this.width + this.tabSize) / this.scale,
       this.height / this.scale,
       this.x,
       this.y,
-      this.width + 0.25 * this.height,
+      this.width + this.tabSize,
       this.height
     );
     context.restore();
     context.stroke();
-    context.font = '24px Arial';
+    context.font = '20px Arial';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.strokeText(this.text, this.x + this.width / 2, this.y + this.height / 2);

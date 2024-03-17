@@ -65,6 +65,6 @@ form:invalid .loginForm_button{
 
 @media all and (max-width: 880px) {
   .loginForm_wrapper{
-    width: 90%;
+    width: 85%;
   }
 }

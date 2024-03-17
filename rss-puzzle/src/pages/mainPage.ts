@@ -3,8 +3,8 @@ import './mainPage.css';
 import { Canvas } from '../components/canvas';
 import { Game } from '../components/currentGame';
 
-const canvasWidth = window.innerWidth * 0.8;
-const canvasHeight = window.innerHeight * 0.8;
+let canvasWidth = window.innerWidth * 0.9;
+let canvasHeight = window.innerHeight * 0.9;
 const currentLevel = 1;
 const currentRound = 1;
 const currentSentence = 1;
@@ -18,7 +18,11 @@ let mainCanvas = new Canvas(
 );
 
 let canvasElement = mainCanvas.getCanvas();
-
+window.addEventListener('resize', () => {
+  canvasWidth = window.innerWidth * 0.9;
+  canvasHeight = window.innerHeight * 0.9;
+  mainCanvas.resize();
+});
 function updateCanvas() {
   mainCanvas = new Canvas(
     canvasWidth,

@@ -76,5 +76,28 @@ export class PieceArray extends Array {
       for (let j = 0; j < pieces.length; j += 1) if (pieces[j].getColID() === i) this.pieces[i] = pieces[j];
     this.x = 0;
   }
+
+  public changeValues(
+    pieces: Array<Piece>,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    empty: Piece,
+    place: Place
+  ) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    for (let i = 0; i < this.pieces.length; i += 1)
+      for (let j = 0; j < this.pieces.length; j += 1) {
+        if (this.pieces[i].getColID() === pieces[j].getColID()) {
+          this.pieces[i] = pieces[j];
+          this.pieces[i].setPlace(place);
+        }
+        if (this.pieces[i].getColID() === empty.getColID()) this.pieces[i] = empty;
+      }
+  }
 }
 export default PieceArray;
