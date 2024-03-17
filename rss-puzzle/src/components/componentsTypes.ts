@@ -7,6 +7,11 @@ export type Props = {
   for?: string;
   required?: string;
   onclick?(): void;
+  onchange?(evt: MouseEvent): void;
+  name?: string;
+  list?: string;
+  value?: string;
+  innerHTML?: string;
 };
 
 export type ImageElement = {

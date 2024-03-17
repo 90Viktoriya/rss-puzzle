@@ -59,6 +59,11 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
     }
   }
 
+  public replaceWith(newEl: BaseComponent | HTMLElement) {
+    if (newEl instanceof HTMLElement) this.node.replaceWith(newEl);
+    else this.node.replaceWith(newEl.getNode());
+  }
+
   public addClass(className: string) {
     this.node.classList.add(className);
   }

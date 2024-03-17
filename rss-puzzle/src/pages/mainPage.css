@@ -6,7 +6,18 @@
   width: 90%;
 }
 .mainPage_menu-wrapper{
+  display: flex;
+  flex-direction: row;
   min-height: 100px;
+}
+.mainPage_input{
+  width: 50%;
+  font-size: 20px;
+}
+
+.mainPage_label{
+  width: 40%;
+  font-size: 36px;
 }
 .mainPage_button-wrapper{
   display: flex;
@@ -15,6 +26,9 @@
   justify-content: center;
 }
 .mainPage_button-continue{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 30px;
   font-size: 36px;
   text-align: center;
@@ -26,6 +40,9 @@
   cursor: pointer;
 }
 .mainPage_button-check{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 30px;
   font-size: 36px;
   text-align: center;
@@ -43,6 +60,9 @@
   margin-bottom: 20px;
 }
 .mainPage_button-complete{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 30px;
   font-size: 36px;
   text-align: center;

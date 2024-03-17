@@ -41,9 +41,9 @@ export class Canvas {
     this.context = this.canvas.getContext('2d');
     this.canvas.className = 'mainPage_canvas';
     this.sentences = sentences;
-    this.currentRowID = curRowID;
+    this.currentRowID = curRowID - 1;
     this.canvas.width = width;
-    if (width > 1000) this.canvas.width = 1000;
+    if (width > 900) this.canvas.width = 900;
 
     this.canvas.height = height;
     this.pieceHeight = this.canvas.height / (sentences.length + 2);
@@ -54,7 +54,7 @@ export class Canvas {
     this.img = new Image();
     this.pieces = [];
     this.emptyPieces = [];
-    this.result = sentences[curRowID];
+    this.result = sentences[this.currentRowID];
     this.dontMove = false;
 
     this.createPieces(sentences);
@@ -134,7 +134,7 @@ export class Canvas {
     if (evt.target instanceof HTMLElement) {
       for (let i = 0; i < currentPieces.length; i += 1) {
         if (currentPieces[i].checkPress(evt)) {
-          this.btnCheckDisable();
+          Canvas.btnCheckDisable();
           this.moveCurrentPiece(currentPieces[i]);
           return;
         }
@@ -238,14 +238,12 @@ export class Canvas {
 
   public loadImg(imgSrc: string) {
     this.img.src = imgSrc;
-    console.log(imgSrc);
 
     if (this.img === null) return;
     this.img.onload = () => {
       const proportion = this.img.width / this.img.height;
       this.height = this.canvas.width / proportion;
       this.setNewValues();
-      console.log(this.height);
       this.scale = this.width / this.img.width;
       // this.context?.drawImage(this.img,0,0,this.img.width,this.img.height,this.x,this.y,this.width,this.height);
 
@@ -258,7 +256,7 @@ export class Canvas {
   }
 
   public completeSentence() {
-    this.btnCheckDisable();
+    Canvas.btnCheckDisable();
     this.piecesResult.fillInOrder(this.pieces[this.currentRowID]);
     this.piecesResult.draw(this.context);
     this.piecesAdd.clear(this.context);
